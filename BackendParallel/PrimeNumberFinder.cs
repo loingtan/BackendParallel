@@ -3,7 +3,7 @@
 namespace BackendParallel;
 
 public class PrimeNumberFinder(ConcurrentQueue<(int, string)> inputQueue, ConcurrentQueue<(int, string)> outputQueue)
-{
+{   private const int DelayMilliseconds = 1; 
     public async Task FindPrimes(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -17,7 +17,7 @@ public class PrimeNumberFinder(ConcurrentQueue<(int, string)> inputQueue, Concur
             }
             else
             {
-                await Task.Delay(1, cancellationToken);
+                await Task.Delay(DelayMilliseconds, cancellationToken);
             }
         }
     }

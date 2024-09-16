@@ -11,7 +11,7 @@ public class SystemMonitor(
 {
     private long _sortedWriteCount = 0;
     private long _primeWriteCount = 0;
-
+    private const int delayMilliseconds = 1000;
     public void IncrementSortedWriteCount()
     {
         Interlocked.Increment(ref _sortedWriteCount);
@@ -28,7 +28,7 @@ public class SystemMonitor(
         var timeCount = Stopwatch.GetElapsedTime(startTime);
         while (!cancellationToken.IsCancellationRequested)
         {
-            await Task.Delay(1000, cancellationToken); 
+            await Task.Delay(delayMilliseconds, cancellationToken); 
             var currentTime = Stopwatch.GetElapsedTime(startTime);
             var elapsedSeconds = Stopwatch.GetElapsedTime(startTime).TotalSeconds - timeCount.TotalSeconds;
             var sortedWriteSpeed = _sortedWriteCount / elapsedSeconds;
@@ -37,7 +37,7 @@ public class SystemMonitor(
             Console.WriteLine($"System Monitor - Running for {currentTime.TotalSeconds:F0} seconds");
             Console.WriteLine($"Queue Sizes:");
             Console.WriteLine($"  Sorter Queue: {sorterQueue.Count}");
-            // Console.WriteLine($"  Prime Finder Queue: {primeFinderQueue.Count}");
+            Console.WriteLine($"  Prime Finder Queue: {primeFinderQueue.Count}");
             Console.WriteLine($"  Sorted Writer Queue: {writerQueue.Count}");
             Console.WriteLine($"  Prime Sorted Writer Queue: {primeWriterQueue.Count}");
             Console.WriteLine($"Memory Usage: {Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024} MB");

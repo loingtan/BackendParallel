@@ -8,8 +8,7 @@ public class Sorter(
     ConcurrentQueue<(int, string)> writerQueue)
 {
     private const int BatchSize = 1000;
-
-    
+    private const int DelayMilliseconds = 1;
     public async Task SortNumbers(CancellationToken cancellationToken)
     {
         var batch = new List<(int, string)>(BatchSize);
@@ -20,15 +19,18 @@ public class Sorter(
                 batch.Add(val);
             }
 
-            if (batch.Count != BatchSize) continue;
-            batch.Sort((x, y) => x.Item1.CompareTo(y.Item1));
-            foreach (var number in batch)
+            if (batch.Count == BatchSize)
             {
-                primeFinderQueue.Enqueue(number);
-                writerQueue.Enqueue(number);
+                batch.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+                foreach (var number in batch)
+                {
+                    primeFinderQueue.Enqueue(number);
+                    writerQueue.Enqueue(number);
+                }
+                batch.Clear();
             }
-            await Task.Delay(1, cancellationToken);
-            batch.Clear();
+
+            await Task.Delay(DelayMilliseconds, cancellationToken);
         }
     }
 }

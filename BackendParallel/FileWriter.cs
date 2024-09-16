@@ -55,7 +55,7 @@ public class FileWriter(
                     count = 0;
                 }
 
-                await Task.Delay(DelayMGitilliseconds, cancellationToken);
+                await Task.Delay(DelayMilliseconds, cancellationToken);
             }
         }
         
@@ -63,5 +63,6 @@ public class FileWriter(
         {
             await writer.WriteAsync(sb.ToString());
         }
+        
     }
 }
