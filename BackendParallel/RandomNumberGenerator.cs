@@ -2,7 +2,7 @@
 
 namespace BackendParallel;
 
-public class RandomNumberGenerator(BlockingCollection<(int, string)> outputQueue, int generatorId)
+public class RandomNumberGenerator(BlockingCollection<(int, string)> outputQueue, string generatorId)
 {
     private readonly Random _random = new(Guid.NewGuid().GetHashCode());
 
@@ -11,7 +11,8 @@ public class RandomNumberGenerator(BlockingCollection<(int, string)> outputQueue
         while (!cancellationToken.IsCancellationRequested)
         {
             var number = _random.Next();
-            outputQueue.Add((number, $"RNG{generatorId}"), cancellationToken);
+
+            outputQueue.Add((number, generatorId), cancellationToken);
         }
 
         return Task.CompletedTask;

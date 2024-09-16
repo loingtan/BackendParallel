@@ -14,14 +14,14 @@ internal abstract class Program
         var primeWriterQueue = new ConcurrentQueue<(int, string)>();
         var cts = new CancellationTokenSource();
         var monitor = new SystemMonitor(sorterQueue, primeFinderQueue, writerQueue, primeWriterQueue);
-        var gen1 = Task.Run(() => new RandomNumberGenerator(sorterQueue, 1).GenerateNumbers(cts.Token), cts.Token);
-        var gen2 = Task.Run(() => new RandomNumberGenerator(sorterQueue, 2).GenerateNumbers(cts.Token), cts.Token);
-        var gen3 = Task.Run(() => new RandomNumberGenerator(sorterQueue, 3).GenerateNumbers(cts.Token), cts.Token);
-        var sorter = Task.Run(() => new Sorter(sorterQueue, primeFinderQueue, writerQueue).SortNumbers(cts.Token),
-            cts.Token);
+        var gen1 = Task.Factory.StartNew(() => new RandomNumberGenerator( sorterQueue, "RNG1").GenerateNumbers(cts.Token), cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var gen2 = Task.Factory.StartNew(() => new RandomNumberGenerator(sorterQueue, "RNG2").GenerateNumbers(cts.Token), cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var gen3 = Task.Factory.StartNew(() => new RandomNumberGenerator(sorterQueue, "RNG3").GenerateNumbers(cts.Token), cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var sorter = Task.Factory.StartNew(() => new Sorter(sorterQueue, primeFinderQueue, writerQueue).SortNumbers(cts.Token),
+            cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         var primeFinder =
-            Task.Run(() => new PrimeNumberFinder(primeFinderQueue, primeWriterQueue).FindPrimes(cts.Token),
-                cts.Token);
+            Task.Factory.StartNew(() => new PrimeNumberFinder(primeFinderQueue, primeWriterQueue).FindPrimes(cts.Token),
+                cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         var sortedWriter = Task.Factory.StartNew(
             () => new FileWriter(writerQueue, "sorted.txt", "sorted", monitor).WriteNumbersAsync(cts.Token),
             cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

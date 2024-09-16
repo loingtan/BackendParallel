@@ -11,7 +11,6 @@ public class SystemMonitor(
 {
     private long _sortedWriteCount = 0;
     private long _primeWriteCount = 0;
-    private readonly object _lockObject = new object();
 
     public void IncrementSortedWriteCount()
     {
@@ -38,9 +37,9 @@ public class SystemMonitor(
             Console.WriteLine($"System Monitor - Running for {currentTime.TotalSeconds:F0} seconds");
             Console.WriteLine($"Queue Sizes:");
             Console.WriteLine($"  Sorter Queue: {sorterQueue.Count}");
-            Console.WriteLine($"  Prime Finder Queue: {primeFinderQueue.Count}");
-            Console.WriteLine($"  Writer Queue: {writerQueue.Count}");
-            Console.WriteLine($"  Prime Writer Queue: {primeWriterQueue.Count}");
+            // Console.WriteLine($"  Prime Finder Queue: {primeFinderQueue.Count}");
+            Console.WriteLine($"  Sorted Writer Queue: {writerQueue.Count}");
+            Console.WriteLine($"  Prime Sorted Writer Queue: {primeWriterQueue.Count}");
             Console.WriteLine($"Memory Usage: {Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024} MB");
             Console.WriteLine($"Write Speeds:");
             Console.WriteLine($"  Sorted Numbers: {sortedWriteSpeed:F2} numbers/second");
